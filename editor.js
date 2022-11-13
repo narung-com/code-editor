@@ -74,7 +74,7 @@
 
 <div class="editor-container">
     <ul class="editor-tabs">
-      <li id="edit-js" class="editor-tab editor-tab--right-border editor-tab--active">Component</li>
+      <li id="edit-js" class="editor-tab editor-tab--right-border editor-tab--active">Practice</li>
       <li id="edit-css" class="editor-tab editor-tab--right-border">Solution</li>
       
     </ul>
@@ -90,7 +90,7 @@
     editor.setTheme("ace/theme/monokai");
     
     var js = new ace.EditSession(`def findAverage(nums: List[int], k: int) -> float:
-    # Your code...`);
+    # Your code is not saved.`);
     js.setMode('ace/mode/python');
     var css = new ace.EditSession(`def findAverage(nums: List[int], k: int) -> float:
         
@@ -107,6 +107,57 @@
     `);
     css.setMode('ace/mode/python');
 
+    var intervalId = setInterval(function() {
+      console.log(_user_id);
+      console.log(editor.getValue());
+      saveCode(String(_user_id) + lecture_data.lectureId, editor.getValue());
+    }, 5000);
+    
+    
+    window.onload = async function(){
+      
+      id = String(_user_id) + lecture_data.lectureId, editor.getValue()
+      response = await getCode(id)
+      //editor.setValue(response)
+      console.log("onload called")
+      console.log(js.getValue())
+      
+      js.setValue(response)
+    };
+    
+    const saveCode = async function (id, code) {
+      console.log("saveCode");
+      let data = {[id]: code};
+      console.log(data);
+      const response = await fetch('https://algolab-c1646-default-rtdb.firebaseio.com/student_code.json', {
+          method: 'PATCH',
+          body: JSON.stringify(data),
+          headers: {
+            'Content-Type': 'application/json'
+            }
+          });
+      const myJson = await response.json();
+      console.log("respons ....");
+      console.log(myJson);
+    }
+
+    
+    const getCode = async function (id) {
+      console.log("getCode");
+
+      console.log(id);
+      const response = await fetch(`https://algolab-c1646-default-rtdb.firebaseio.com/student_code/${id}.json`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+            }
+          });
+      const myJson = await response.json();
+      console.log("respons ....");
+      console.log(myJson);
+      return myJson;
+    }
+    
     editor.setTheme("ace/theme/dracula");
     editor.setSession(js);
     
