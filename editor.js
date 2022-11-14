@@ -88,11 +88,11 @@
           <option value="javascript">Javascript</option>
           <option value="python" selected>Python</option>
         </select>
+        <a id="run-code" href="#">Run</a>
       </li>
     </ul>
     <div id="editor" class="editor active">
     </div>
-    <button class="editor-fullscreen-closer"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18"><path id="editor-fullscreen-closer__icon" d="M4.5 11H3v4h4v-1.5H4.5V11zM3 7h1.5V4.5H7V3H3v4zm10.5 6.5H11V15h4v-4h-1.5v2.5zM11 3v1.5h2.5V7H15V3h-4z"/></svg></button>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.13.0/ace.js" type="text/javascript" charset="utf-8"></script>
@@ -196,6 +196,50 @@
       'python': 'Python3',
       'java': 'Java'
     } 
+    
+    const runcode = document.getElementById('run-code');
+    
+    runcode.addEventListener('click', (e) => {
+      console.log("test");
+      code = btoa(js.getValue());
+      
+      const options = {
+    	method: 'POST',
+    	headers: {
+      		'content-type': 'application/json',
+      		'Content-Type': 'application/json',
+      		'X-RapidAPI-Key': '3114f8b8a0msh865be114f688e1cp171eedjsn32b9e9dbdbd4',
+      		'X-RapidAPI-Host': 'judge0-ce.p.rapidapi.com'
+      	},
+      	body: `{"language_id":71,"source_code":"${code}","stdin":"SnVkZ2Uw"}`
+      };
+      
+      fetch('https://judge0-ce.p.rapidapi.com/submissions?base64_encoded=true&fields=*', options)
+      	.then(createResponse => createResponse.json())
+      	.then(createResponse => {
+      	  console.log(createResponse)
+      	  var intervalId = setInterval(function() {
+            
+            const options = {
+            	method: 'GET',
+            	headers: {
+            		'X-RapidAPI-Key': '3114f8b8a0msh865be114f688e1cp171eedjsn32b9e9dbdbd4',
+            		'X-RapidAPI-Host': 'judge0-ce.p.rapidapi.com'
+            	}
+            };
+            
+            fetch(`https://judge0-ce.p.rapidapi.com/submissions/${createResponse.token}?base64_encoded=true&fields=*`, options)
+            	.then(response => response.json())
+            	.then(response => {
+            	  output = atob(response.stdout);
+            	  console.log(output)
+            	 })
+            	.catch(err => console.error(err));
+          }, 5000);
+      	})
+      	.catch(err => console.error(err));
+    });
+    
     
     language.addEventListener('change', (e) => {
       js.setMode(`ace/mode/${e.target.value}`);
