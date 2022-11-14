@@ -1,4 +1,4 @@
-codeeditor = function() {
+
 var editor = ace.edit("editor");
 
 editor.setTheme("ace/theme/monokai");
@@ -113,4 +113,4 @@ cssTab.addEventListener('click', () => {
   editor.setSession(css);
 });
 
-}
+
