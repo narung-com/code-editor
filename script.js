@@ -1,4 +1,6 @@
+(function() {
 var editor = ace.edit("editor");
+
 editor.setTheme("ace/theme/monokai");
 
 var js = new ace.EditSession(`def findAverage(nums: List[int], k: int) -> float:
@@ -110,3 +112,5 @@ cssTab.addEventListener('click', () => {
   selectTab('edit-css');
   editor.setSession(css);
 });
+
+})();
