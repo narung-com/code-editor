@@ -22,8 +22,8 @@
     		background: #2f3240;
         color: #f8f8f2;
       	width: 100%;
-        height: 60px;
-        font: 12px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+        height: 70px;
+        font: 10px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
     }
     
     .editor-tab {
@@ -70,13 +70,25 @@
       fill: #f8f8f2;
     }
 
+    #language {
+      color: #ffffff;
+      background-color: #2f3240;
+      border-radius: 8px;
+    }
 </style>
 
 <div class="editor-container">
     <ul class="editor-tabs">
       <li id="edit-js" class="editor-tab editor-tab--right-border editor-tab--active">Practice</li>
       <li id="edit-css" class="editor-tab editor-tab--right-border">Solution</li>
-      
+      <li id="edit-css" class="editor-tab editor-tab--right-border">
+        <select name="language" id="language">
+          <option value="cpp">C++</option>
+          <option value="java">Java</option>
+          <option value="javascript">Javascript</option>
+          <option value="python" selected>Python</option>
+        </select>
+      </li>
     </ul>
     <div id="editor" class="editor active">
     </div>
@@ -92,43 +104,31 @@
     var js = new ace.EditSession(`def findAverage(nums: List[int], k: int) -> float:
     # Your code is not saved.`);
     js.setMode('ace/mode/python');
-    var css = new ace.EditSession(`def findAverage(nums: List[int], k: int) -> float:
-        
-        windowSum = sum(nums[:k])
-        average = windowSum/k
-        result = [average]
-        
-        for i in range(len(nums)-k):
-            windowSum = windowSum - nums[i] + nums[i+k]
-            average = windowSum/k
-            result.append(average)
-            
-        return result
-    `);
+    var css = new ace.EditSession('');
     css.setMode('ace/mode/python');
 
     var intervalId = setInterval(function() {
-      console.log(_user_id);
-      console.log(editor.getValue());
       saveCode(String(_user_id) + lecture_data.lectureId, editor.getValue());
-    }, 5000);
+    }, 10000);
     
+    solutions = null;
     
     window.onload = async function(){
       
       id = String(_user_id) + lecture_data.lectureId, editor.getValue()
       response = await getCode(id)
-      //editor.setValue(response)
-      console.log("onload called")
-      console.log(js.getValue())
       
       js.setValue(response)
+      
+      fetchAnswer("palindrome-number", "Python3").then((resp) => {
+      	solutions = resp;
+      	
+      	css.setValue(solutions["Python3"]);
+      });
     };
     
     const saveCode = async function (id, code) {
-      console.log("saveCode");
       let data = {[id]: code};
-      console.log(data);
       const response = await fetch('https://algolab-c1646-default-rtdb.firebaseio.com/student_code.json', {
           method: 'PATCH',
           body: JSON.stringify(data),
@@ -137,15 +137,9 @@
             }
           });
       const myJson = await response.json();
-      console.log("respons ....");
-      console.log(myJson);
     }
 
-    
     const getCode = async function (id) {
-      console.log("getCode");
-
-      console.log(id);
       const response = await fetch(`https://algolab-c1646-default-rtdb.firebaseio.com/student_code/${id}.json`, {
           method: 'GET',
           headers: {
@@ -153,9 +147,32 @@
             }
           });
       const myJson = await response.json();
-      console.log("respons ....");
-      console.log(myJson);
       return myJson;
+    }
+    
+    async function fetchAnswer(problemURL, language) {
+      let headers = new Headers();
+      headers.append('Authorization', 'Bearer key1P9uct0K334nx0');
+    
+      const requestOptions = {
+        method: 'GET',
+        headers: headers,
+        redirect: 'follow',
+      };
+    
+      let response;
+      let formattedResponse;
+      try {
+        response = await fetch(
+          `https://api.airtable.com/v0/appqasx2lkrlZ5e97/leetcode-solutions?filterByFormula=(%7Bproblem-url%7D+%3D+'${problemURL}')`,
+          requestOptions
+        );
+        formattedResponse = await response.text();
+      } catch (error) {
+        return 'Error Occurred';
+      }
+    
+      return JSON.parse(formattedResponse).records[0].fields;
     }
     
     editor.setTheme("ace/theme/dracula");
@@ -173,10 +190,24 @@
       tab.classList.add('editor-tab--active');
     }
     
+    const language = document.getElementById('language');
+    
+    var lang2lang = {
+      'python': 'Python3',
+      'java': 'Java'
+    } 
+    
+    language.addEventListener('change', (e) => {
+      js.setMode(`ace/mode/${e.target.value}`);
+      css.setMode(`ace/mode/${e.target.value}`);
+      css.setValue(solutions[lang2lang[e.target.value]]);
+    });
+    
     codeTab.addEventListener('click', () => {
       selectTab('edit-js');
       editor.setSession(js);
     });
+    
     cssTab.addEventListener('click', () => {
       selectTab('edit-css');
       editor.setSession(css);
