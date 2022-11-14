@@ -108,14 +108,14 @@
     css.setMode('ace/mode/python');
 
     var intervalId = setInterval(function() {
-      saveCode(String(_user_id) + lecture_data.lectureId, editor.getValue());
+      saveCode(String(_user_id) + lecture_data.lectureId, js.getValue());
     }, 10000);
     
     solutions = null;
     
     window.onload = async function(){
       
-      id = String(_user_id) + lecture_data.lectureId, editor.getValue()
+      id = String(_user_id) + lecture_data.lectureId
       response = await getCode(id)
       
       js.setValue(response)
