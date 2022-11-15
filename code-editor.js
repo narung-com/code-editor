@@ -93,7 +93,9 @@ const language = document.getElementById('language');
 
 var lang2lang = {
   'python': 'Python3',
-  'java': 'Java'
+  'java': 'Java',
+  'c++': 'C++',
+  'javascript': 'JavaScript'
 } 
 
 language.addEventListener('change', (e) => {
