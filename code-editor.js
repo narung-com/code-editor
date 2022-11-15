@@ -94,7 +94,7 @@ const language = document.getElementById('language');
 var lang2lang = {
   'python': 'Python3',
   'java': 'Java',
-  'c++': 'C++',
+  'cpp': 'C++',
   'javascript': 'JavaScript'
 } 
 
