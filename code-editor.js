@@ -1,6 +1,5 @@
 
 var editor = ace.edit("editor");
-
 editor.setTheme("ace/theme/monokai");
 
 var js = new ace.EditSession(`def findAverage(nums: List[int], k: int) -> float:
@@ -21,7 +20,7 @@ window.onload = async function(){
 
   js.setValue(response)
 
-  fetchAnswer("palindrome-number", "Python3").then((resp) => {
+  fetchAnswer(problem, "Python3").then((resp) => {
     solutions = resp;
 
     css.setValue(solutions["Python3"]);
