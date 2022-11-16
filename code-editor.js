@@ -16,7 +16,7 @@ var intervalId = setInterval(function() {
 
 solutions = null;
 
-window.onload = async function(){
+function fetchCode() {
 
   id = String(_user_id) + lecture_data.lectureId, editor.getValue()
   response = await getCode(id)
@@ -28,7 +28,16 @@ window.onload = async function(){
 
     css.setValue(solutions["Python3"]);
   });
+}
+window.onload = async function(){
+  fetchCode()
 };
+
+tab = document.querySelector('.lecture-sidebar');
+tab.onclick = function(){
+  fetchCode();
+}
+  
 
 const saveCode = async function (id, code) {
   let data = {[id]: code};
