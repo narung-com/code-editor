@@ -1,3 +1,4 @@
+!function(){
 var editorContainer = document.getElementById('editor-container');
 var problem = editorContainer.getAttribute('problem');
 
@@ -115,4 +116,4 @@ cssTab.addEventListener('click', () => {
   selectTab('edit-css');
   editor.setSession(css);
 });
-
+}();
