@@ -16,7 +16,7 @@ var intervalId = setInterval(function() {
 
 solutions = null;
 
-async function fetchCode() {
+function fetchCode() {
 
   id = String(_user_id) + lecture_data.lectureId, editor.getValue();
   response = await getCode(id);
