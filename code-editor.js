@@ -1,3 +1,5 @@
+var editorContainer = document.getElementById('editor-container');
+var problem = editorContainer.getAttribute('problem');
 
 var editor = ace.edit("editor");
 editor.setTheme("ace/theme/monokai");
