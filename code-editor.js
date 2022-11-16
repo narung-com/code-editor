@@ -34,7 +34,7 @@ window.onload = async function(){
 };
 
 tab = document.querySelector('.lecture-sidebar');
-tab.onclick = function(){
+tab.onclick = async function(){
   await fetchCode();
 }
   
