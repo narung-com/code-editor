@@ -16,10 +16,10 @@ var intervalId = setInterval(function() {
 
 solutions = null;
 
-function fetchCode() {
+async function fetchCode() {
 
-  id = String(_user_id) + lecture_data.lectureId, editor.getValue()
-  response = await getCode(id)
+  id = String(_user_id) + lecture_data.lectureId, editor.getValue();
+  response = await getCode(id);
 
   js.setValue(response)
 
@@ -30,12 +30,12 @@ function fetchCode() {
   });
 }
 window.onload = async function(){
-  fetchCode()
+  await fetchCode()
 };
 
 tab = document.querySelector('.lecture-sidebar');
 tab.onclick = function(){
-  fetchCode();
+  await fetchCode();
 }
   
 
