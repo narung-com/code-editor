@@ -21,7 +21,7 @@
     
       js.setValue(response)
     
-      var response = fetchAnswer("Python3")
+      var response = await fetchAnswer("Python3")
       localStorage[localStorage['problem']] = JSON.stringify(response);
       css.setValue(JSON.parse(localStorage[localStorage['problem']])["Python3"]);
     }
