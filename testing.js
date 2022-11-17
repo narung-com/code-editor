@@ -16,8 +16,8 @@ var intervalId = setInterval(function() {
 
 solutions = null;
 
-aysnc function fetchCode() {
 
+window.onload = async function(){
   id = String(_user_id) + lecture_data.lectureId, editor.getValue();
   response = await getCode(id);
 
@@ -28,14 +28,20 @@ aysnc function fetchCode() {
 
     css.setValue(solutions["Python3"]);
   });
-}
-window.onload = function(){
-  fetchCode()
 };
 
 tab = document.querySelector('.lecture-sidebar');
-tab.onclick = function(){
-  fetchCode();
+tab.onclick = async function(){
+  id = String(_user_id) + lecture_data.lectureId, editor.getValue();
+  response = await getCode(id);
+
+  js.setValue(response)
+
+  fetchAnswer(problem, "Python3").then((resp) => {
+    solutions = resp;
+
+    css.setValue(solutions["Python3"]);
+  });
 }
   
 
