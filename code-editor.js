@@ -1,8 +1,10 @@
-!function(){
+
+  !function(){
     console.log("In function");
     var editorContainer = document.getElementById('editor-container');
     var problem = editorContainer.getAttribute('problem');
-    
+    localStorage['problem'] = problem;
+    console.log(problem);
     var editor = ace.edit("editor");
     editor.setTheme("ace/theme/monokai");
     
@@ -24,21 +26,25 @@
     
       js.setValue(response)
     
-      fetchAnswer(problem, "Python3").then((resp) => {
+      fetchAnswer("Python3").then((resp) => {
         console.log("inside fetchAnswer" + JSON.stringify(resp));
-        localStorage[problem] = JSON.stringify(resp);
+        localStorage[localStorage['problem']] = JSON.stringify(resp);
         
-        css.setValue(JSON.parse(localStorage[problem])["Python3"]);
+        css.setValue(JSON.parse(localStorage[localStorage['problem']])["Python3"]);
       });
     }
     window.onload = async function(){
+      var editorContainer = document.getElementById('editor-container');
+      localStorage['problem'] = editorContainer.getAttribute('problem');
       await fetchCode()
     };
     
-    tab = document.querySelector('.lecture-sidebar');
-    tab.onclick = async function(){
+    lecturePage = document.querySelector('.lecture-page-layout');
+    lecturePage.addEventListener('load', async () => {
+      var editorContainer = document.getElementById('editor-container');
+      localStorage['problem'] = editorContainer.getAttribute('problem');
       await fetchCode();
-    }
+    });
       
     
     const saveCode = async function (id, code) {
@@ -63,7 +69,7 @@
       return myJson;
     }
     
-    async function fetchAnswer(problemURL, language) {
+    async function fetchAnswer(language) {
       let headers = new Headers();
       headers.append('Authorization', 'Bearer key1P9uct0K334nx0');
     
@@ -73,11 +79,13 @@
         redirect: 'follow',
       };
     
+      console.log("In fetchAnswer two-sum -> " + localStorage['problem']);
+      
       let response;
       let formattedResponse;
       try {
         response = await fetch(
-          `https://api.airtable.com/v0/appqasx2lkrlZ5e97/leetcode-solutions?filterByFormula=(%7Bproblem-url%7D+%3D+'${problemURL}')`,
+          `https://api.airtable.com/v0/appqasx2lkrlZ5e97/leetcode-solutions?filterByFormula=(%7Bproblem-url%7D+%3D+'${localStorage['problem']}')`,
           requestOptions
         );
         formattedResponse = await response.text();
@@ -119,7 +127,7 @@
       js.setMode(`ace/mode/${e.target.value}`);
       css.setMode(`ace/mode/${e.target.value}`);
       
-      css.setValue(JSON.parse(localStorage[problem])[lang2lang[e.target.value]]);
+      css.setValue(JSON.parse(localStorage[localStorage['problem']])[lang2lang[e.target.value]]);
     });
     
     codeTab.addEventListener('click', () => {
@@ -130,8 +138,7 @@
     
     cssTab.addEventListener('click', () => {
       selectTab('edit-css');
-      css.setValue(JSON.parse(localStorage[problem])["Python3"]);
+      css.setValue(JSON.parse(localStorage[localStorage['problem']])["Python3"]);
       editor.setSession(css);
     });
 }();
-
