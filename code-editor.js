@@ -1,4 +1,4 @@
-(function(){
+  (async function(){
     var editorContainer = document.getElementById('editor-container');
     var problem = editorContainer.getAttribute('problem');
     localStorage['problem'] = problem;
@@ -13,26 +13,23 @@
       saveCode(String(_user_id) + lecture_data.lectureId, js.getValue());
     }, 10000);
     
-    var solutions = null;
+    
+    var url = window.location.toString().split("?")
+    var urlParams = window.location.toString().split("/")
+    var lecID = urlParams.at(-1)
+    
+    await fetchCode()
     
     async function fetchCode() {
-      var id = String(_user_id) + lecture_data.lectureId;
+      var id = String(_user_id) + lecID;
       var response = await getCode(id);
-    
       js.setValue(response)
-    
       var response = await fetchAnswer("Python3")
       localStorage[localStorage['problem']] = JSON.stringify(response);
       css.setValue(JSON.parse(localStorage[localStorage['problem']])["Python3"]);
     }
-
-    window.onload = async function(){
-      var editorContainer = document.getElementById('editor-container');
-      localStorage['problem'] = editorContainer.getAttribute('problem');
-      await fetchCode()
-    };
     
-    lecturePage = document.querySelector('.lecture-page-layout');
+    var lecturePage = document.querySelector('.lecture-page-layout');
     lecturePage.addEventListener('load', async () => {
       var editorContainer = document.getElementById('editor-container');
       localStorage['problem'] = editorContainer.getAttribute('problem');
@@ -51,15 +48,22 @@
           });
       const myJson = await response.json();
     }
+    
     async function getCode(id) {
-      const response = await fetch(`https://algolab-c1646-default-rtdb.firebaseio.com/student_code/${id}.json`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json'
-            }
-          });
-      const myJson = await response.json();
-      return myJson;
+      try{
+        const response = await fetch(`https://algolab-c1646-default-rtdb.firebaseio.com/student_code/${id}.json`, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json'
+              }
+            })
+        const myJson = await response.json();
+        return myJson;
+          
+      }
+      catch(err){
+        console.error(err)
+      }
     }
     
     async function fetchAnswer(language) {
@@ -80,8 +84,8 @@
           requestOptions
         );
         formattedResponse = await response.text();
-      } catch (error) {
-        return 'Error Occurred';
+      } catch (err) {
+        console.error(err)
       }
     
       return JSON.parse(formattedResponse).records[0].fields;
