@@ -1,25 +1,20 @@
-  (async function(){
+(async function(){
     var editorContainer = document.getElementById('editor-container');
     var problem = editorContainer.getAttribute('problem');
     localStorage['problem'] = problem;
     var editor = ace.edit("editor");
     editor.setTheme("ace/theme/monokai");
     
-    var js = new ace.EditSession(`# Write Your Code in Function Here`);
-    js.setMode('ace/mode/python');
-    var css = new ace.EditSession('');
-    css.setMode('ace/mode/python');
-    var intervalId = setInterval(function() {
-      saveCode(String(_user_id) + lecture_data.lectureId, js.getValue());
-    }, 10000);
-    
-    
+    // extracting lecture ID from the current page URL
     var url = window.location.toString().split("?")
     var urlParams = window.location.toString().split("/")
     var lecID = urlParams.at(-1)
     
-    await fetchCode()
-    
+    var js = new ace.EditSession(`# Write Your Code in Function Here`);
+    js.setMode('ace/mode/python');
+    var css = new ace.EditSession('');
+    css.setMode('ace/mode/python');
+ 
     async function fetchCode() {
       var id = String(_user_id) + lecID;
       var response = await getCode(id);
@@ -52,14 +47,10 @@
     async function getCode(id) {
       try{
         const response = await fetch(`https://algolab-c1646-default-rtdb.firebaseio.com/student_code/${id}.json`, {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json'
-              }
+              method: 'GET',
             })
         const myJson = await response.json();
         return myJson;
-          
       }
       catch(err){
         console.error(err)
@@ -90,6 +81,23 @@
     
       return JSON.parse(formattedResponse).records[0].fields;
     }
+    
+    await fetchCode()
+    
+    var intervalId = setInterval(function(){
+    saveCode(String(_user_id) + lecID, js.getValue())}, 10000);
+    
+    
+    // logic to extract all nodes having class item i.e. <a> tags on the sidebar
+    // and then attaching click event listener to all these nodes
+    let nodes = document.querySelectorAll(".item");
+     for (let i = 0; i < nodes.length; i++) {
+         nodes[i].addEventListener("click", function() {
+         // grabbing the nextPage URL using data-ss-event-href attribute of <a> tags    
+         const nextPage = this.getAttribute('data-ss-event-href')
+         // loading this page using window.location.href to reload the page
+         window.location.href = "https://courses.algolab.so"+nextPage
+     });}
     
     editor.setTheme("ace/theme/dracula");
     editor.setSession(js);
