@@ -10,6 +10,21 @@
     var urlParams = window.location.toString().split("/")
     var lecID = urlParams.at(-1)
     
+    // Debouncing Function
+    const debouncingFunction = (fn, delay) => {
+      let timer;
+      return function () {
+        let context = this;
+        clearTimeout(timer);
+        timer = setTimeout(() => {
+          fn.apply(context, [String(_user_id) + lecID, js.getValue()]);
+        }, delay);
+      };
+    };
+
+  const saveCodeWithDelay = debouncingFunction(saveCode, 300);
+  editor.on('change', saveCodeWithDelay)
+    
     var js = new ace.EditSession(`# Write Your Code in Function Here`);
     js.setMode('ace/mode/python');
     var css = new ace.EditSession('');
@@ -84,10 +99,6 @@
     }
     
     await fetchCode()
-    
-    var intervalId = setInterval(function(){
-    saveCode(String(_user_id) + lecID, js.getValue())}, 10000);
-    
     
     // logic to extract all nodes having class item i.e. <a> tags on the sidebar
     // and then attaching click event listener to all these nodes
