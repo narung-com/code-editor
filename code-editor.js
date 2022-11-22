@@ -42,6 +42,7 @@
             }
           });
       const myJson = await response.json();
+      console.log("SAVED.")
     }
     
     async function getCode(id) {
@@ -126,11 +127,12 @@
     language.addEventListener('change', (e) => {
       js.setMode(`ace/mode/${e.target.value}`);
       css.setMode(`ace/mode/${e.target.value}`);
-      
+      console.log("LANG CHANGE", localStorage[localStorage['problem']]) 
       css.setValue(JSON.parse(localStorage[localStorage['problem']])[lang2lang[e.target.value]]);
     });
     
     codeTab.addEventListener('click', () => {
+      editor.setReadOnly(false);
       selectTab('edit-js');
       editor.setSession(js);
     });
@@ -138,6 +140,7 @@
     cssTab.addEventListener('click', () => {
       selectTab('edit-css');
       css.setValue(JSON.parse(localStorage[localStorage['problem']])["Python3"]);
+      editor.setReadOnly(true);
       editor.setSession(css);
     });
 })();
