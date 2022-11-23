@@ -47,18 +47,22 @@
   });
 
   async function saveCode(id, code) {
-    let data = { [id]: code };
-    const response = await fetch(
-      'https://algolab-c1646-default-rtdb.firebaseio.com/student_code.json',
-      {
-        method: 'PATCH',
-        body: JSON.stringify(data),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }
-    );
-    const myJson = await response.json();
+    try {
+      let data = { [id]: code };
+      const response = await fetch(
+        'https://algolab-c1646-default-rtdb.firebaseio.com/student_code.json',
+        {
+          method: 'PATCH',
+          body: JSON.stringify(data),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+      const myJson = await response.json();
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   async function getCode(id) {
