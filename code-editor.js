@@ -59,7 +59,6 @@
       }
     );
     const myJson = await response.json();
-    console.log('SAVED.');
   }
 
   async function getCode(id) {
