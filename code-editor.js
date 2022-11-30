@@ -170,4 +170,10 @@
     editor.setReadOnly(true);
     editor.setSession(css);
   });
+
+  let newComment = document.getElementsByClassName("comments__wrapper")[0]
+  newComment.style.display = "none"
+
+  let postComment = document.getElementsByClassName("comments__heading")[0]
+  postComment.innerHTML = "Old comments!"
 })();
