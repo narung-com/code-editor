@@ -135,6 +135,57 @@
     tab.classList.add('editor-tab--active');
   }
 
+  // Run Code Implementation
+  var runcode = document.getElementById('run-code');
+
+  runcode.addEventListener('click', (e) => {
+    console.log('test');
+    code = btoa(js.getValue());
+
+    const options = {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+        'Content-Type': 'application/json',
+        'X-RapidAPI-Key': '3114f8b8a0msh865be114f688e1cp171eedjsn32b9e9dbdbd4',
+        'X-RapidAPI-Host': 'judge0-ce.p.rapidapi.com',
+      },
+      body: `{"language_id":71,"source_code":"${code}","stdin":"SnVkZ2Uw"}`,
+    };
+
+    fetch(
+      'https://judge0-ce.p.rapidapi.com/submissions?base64_encoded=true&fields=*',
+      options
+    )
+      .then((createResponse) => createResponse.json())
+      .then((createResponse) => {
+        console.log('createResponse: ' + JSON.stringify(createResponse));
+        var intervalId = setInterval(function () {
+          const options = {
+            method: 'GET',
+            headers: {
+              'X-RapidAPI-Key':
+                '3114f8b8a0msh865be114f688e1cp171eedjsn32b9e9dbdbd4',
+              'X-RapidAPI-Host': 'judge0-ce.p.rapidapi.com',
+            },
+          };
+
+          fetch(
+            `https://judge0-ce.p.rapidapi.com/submissions/${createResponse.token}?base64_encoded=true&fields=*`,
+            options
+          )
+            .then((response) => response.json())
+            .then((response) => {
+              output = atob(response.stdout);
+              console.log('output: ' + output);
+              console.log('response: ' + JSON.stringify(response));
+            })
+            .catch((err) => console.error(err));
+        }, 5000);
+      })
+      .catch((err) => console.error(err));
+  });
+
   const language = document.getElementById('language');
 
   var lang2lang = {
@@ -171,9 +222,9 @@
     editor.setSession(css);
   });
 
-  let newComment = document.getElementsByClassName("comments__wrapper")[0]
-  newComment.style.display = "none"
+  let newComment = document.getElementsByClassName('comments__wrapper')[0];
+  newComment.style.display = 'none';
 
-  let postComment = document.getElementsByClassName("comments__heading")[0]
-  postComment.innerHTML = "Old comments!"
+  let postComment = document.getElementsByClassName('comments__heading')[0];
+  postComment.innerHTML = 'Old comments!';
 })();
