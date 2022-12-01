@@ -151,7 +151,6 @@
   runcode.addEventListener('click', (e) => {
     code = btoa(js.getValue());
     if (!code) {
-      showTerminalOutput('h1', 'Please write code.');
       return;
     }
     showTerminalOutput('h1', 'Executing...');
@@ -189,8 +188,10 @@
           )
             .then((response) => response.json())
             .then((response) => {
-              output = atob(response.stdout);
-              showTerminalOutput('pre', output);
+              let programOutput = atob(response.stdout);
+              let finalOutput =
+                programOutput == 'ée' ? atob(response.stderr) : programOutput;
+              showTerminalOutput('h1', finalOutput);
             })
             .catch((err) => console.error(err));
         }, 5000);
