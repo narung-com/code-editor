@@ -5,6 +5,12 @@
   var editor = ace.edit('editor');
   editor.setTheme('ace/theme/monokai');
 
+  // remove margins from the mainContent by removing the specific classs
+  var mainContent = document.querySelector(
+    '.course-mainbar.enforce-maximum-content-width'
+  );
+  mainContent.classList.remove('enforce-maximum-content-width');
+
   // extracting lecture ID from the current page URL
   var url = window.location.toString().split('?');
   var urlParams = window.location.toString().split('/');
