@@ -160,7 +160,7 @@
       .then((createResponse) => createResponse.json())
       .then((createResponse) => {
         console.log('createResponse: ' + JSON.stringify(createResponse));
-        var intervalId = setInterval(function () {
+        setTimeout(function () {
           const options = {
             method: 'GET',
             headers: {
