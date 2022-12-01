@@ -138,10 +138,23 @@
   // Run Code Implementation
   var runcode = document.getElementById('run-code');
 
-  runcode.addEventListener('click', (e) => {
-    console.log('test');
-    code = btoa(js.getValue());
+  let outputContainer = document.querySelector('.output-container');
 
+  function showTerminalOutput(tags, elementText) {
+    outputContainer.textContent = '';
+    let element = document.createElement(tags);
+    element.classList.add('output-code');
+    element.innerText = elementText;
+    outputContainer.appendChild(element);
+  }
+
+  runcode.addEventListener('click', (e) => {
+    code = btoa(js.getValue());
+    if (!code) {
+      showTerminalOutput('h1', 'Please write code.');
+      return;
+    }
+    showTerminalOutput('h1', 'Executing...');
     const options = {
       method: 'POST',
       headers: {
@@ -177,8 +190,7 @@
             .then((response) => response.json())
             .then((response) => {
               output = atob(response.stdout);
-              console.log('output: ' + output);
-              console.log('response: ' + JSON.stringify(response));
+              showTerminalOutput('pre', output);
             })
             .catch((err) => console.error(err));
         }, 5000);
