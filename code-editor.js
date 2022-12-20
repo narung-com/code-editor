@@ -248,5 +248,5 @@
   postComment.innerHTML = 'Old comments!';
   
   let commento = document.getElementById("commento-textarea-root");
-  commento.placeholder = "Share your code. Use tripple backticks \`\`\` to enclose the code snippet.";
+  commento.placeholder = "Share your code. Use triple backticks \`\`\` to enclose the code snippet.";
 })();
