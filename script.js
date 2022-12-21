@@ -3,8 +3,7 @@ var editor = ace.edit("editor");
 
 editor.setTheme("ace/theme/monokai");
 
-var js = new ace.EditSession(`def findAverage(nums: List[int], k: int) -> float:
-# Your code is not saved.`);
+var js = new ace.EditSession(`# Write Your Code Here.`);
 js.setMode('ace/mode/python');
 var css = new ace.EditSession('');
 css.setMode('ace/mode/python');
